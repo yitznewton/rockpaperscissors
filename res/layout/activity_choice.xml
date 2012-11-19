@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".ChoiceActivity" >
+
+    <Button
+        android:id="@+id/button_rock"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:text="@string/rock" />
+
+    <Button
+        android:id="@+id/button_paper"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:text="@string/paper" />
+
+    <Button
+        android:id="@+id/button_scissors"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:text="@string/scissors" />
+
+</LinearLayout>

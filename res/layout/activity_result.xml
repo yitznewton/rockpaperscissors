@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="6dp"
+    tools:context=".ResultActivity" >
+
+	<TextView android:id="@+id/header_you"
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/you"
+		android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	<TextView android:id="@+id/header_me"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/header_you"
+        android:layout_alignBottom="@id/header_you"
+        android:layout_alignParentRight="true"
+		android:text="@string/me"
+		android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView android:id="@+id/choice_you"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_you"
+        android:text="youdidthis"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView android:id="@+id/choice_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/choice_you"
+        android:layout_alignBottom="@id/choice_you"
+        android:layout_alignParentRight="true"
+        android:text="ididthat"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <TextView android:id="@+id/scores_label" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Scores"
+        android:layout_below="@id/choice_me" />
+    
+    <TextView android:id="@+id/score_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scores_label"
+        android:text="yourscore"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/score_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/score_you"
+        android:layout_alignBottom="@id/score_you"
+        android:layout_alignParentRight="true"
+        android:text="myscore"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+</RelativeLayout>
