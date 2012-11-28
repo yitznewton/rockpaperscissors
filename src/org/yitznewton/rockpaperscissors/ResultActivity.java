@@ -1,7 +1,5 @@
 package org.yitznewton.rockpaperscissors;
 
-import java.util.Random;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,6 +44,8 @@ public class ResultActivity extends Activity {
 				playerChoice = RoundOfPlay.CHOICE_SCISSORS;
 				playerChoiceString = getString(R.string.scissors);
 				break;
+			default:
+				throw new RuntimeException("Unexpected player choice value");
 			}
 
 			RoundOfPlay r = new RoundOfPlay(playerChoice, computerChoice());
@@ -119,10 +119,8 @@ public class ResultActivity extends Activity {
 		if (computerChoice != -1) {
 			return computerChoice;
 		}
-
-		Random r = new Random();
-		computerChoice = r.nextInt(3);
-		return computerChoice;
+		
+		return computerChoice = new ComputerChooser().get();
 	}
 	
 	private String computerChoiceString()
