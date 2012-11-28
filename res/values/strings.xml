@@ -10,5 +10,11 @@
     <string name="title_activity_result">ResultActivity</string>
     <string name="me">Me</string>
     <string name="you">You</string>
+    <string name="reset_score">Reset Score</string>
+    <string name="play_again">Play Again</string>
+    <string name="scores">Total Scores</string>
+    <string name="you_win">You win!</string>
+    <string name="i_win">I win!</string>
+    <string name="draw">We\'ll call it a draw.</string>
 
 </resources>
