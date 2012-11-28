@@ -39,10 +39,7 @@ public class ResultActivity extends Activity {
 		setContentView(R.layout.activity_result);
 		
 		if (savedInstanceState == null) {
-			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-			SharedPreferences.Editor editor = preferences.edit();
-			playerScore = preferences.getInt(PREFERENCE_PLAYER_SCORE, 0);
-			computerScore = preferences.getInt(PREFERENCE_COMPUTER_SCORE, 0);
+			loadScore();
 			
 			switch (getIntent().getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1)) {
 			case R.id.button_rock:
@@ -68,14 +65,12 @@ public class ResultActivity extends Activity {
 			case 0:
 				winnerString = getString(R.string.you_win);
 				playerScore++;
-				editor.putInt(PREFERENCE_PLAYER_SCORE, playerScore);
-				editor.commit();
+				saveScore();
 				break;
 			case 1:
 				winnerString = getString(R.string.i_win);
 				computerScore++;
-				editor.putInt(PREFERENCE_COMPUTER_SCORE, computerScore);
-				editor.commit();
+				saveScore();
 				break;
 			case -1:
 				winnerString = getString(R.string.draw);
@@ -96,7 +91,7 @@ public class ResultActivity extends Activity {
 		TextView winnerView = (TextView) findViewById(R.id.result_winner);
 		winnerView.setText(winnerString);
 
-		drawScores();
+		drawScore();
 	}
 	
 	@Override
@@ -137,14 +132,8 @@ public class ResultActivity extends Activity {
 		playerScore = 0;
 		computerScore = 0;
 		
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putInt(PREFERENCE_PLAYER_SCORE, playerScore);
-		editor.putInt(PREFERENCE_COMPUTER_SCORE, computerScore);
-		editor.commit();
-		
-		drawScores();
+		saveScore();
+		drawScore();
 	}
 	
 	@Override
@@ -153,8 +142,25 @@ public class ResultActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_result, menu);
 		return true;
 	}
+	
+	private void loadScore()
+	{
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		playerScore = preferences.getInt(PREFERENCE_PLAYER_SCORE, 0);
+		computerScore = preferences.getInt(PREFERENCE_COMPUTER_SCORE, 0);
+	}
+	
+	private void saveScore()
+	{
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		
+		editor.putInt(PREFERENCE_PLAYER_SCORE, playerScore);
+		editor.putInt(PREFERENCE_COMPUTER_SCORE, computerScore);
+		editor.commit();
+	}
 
-	private void drawScores()
+	private void drawScore()
 	{
 		TextView playerScoreView = (TextView) findViewById(R.id.score_you);
 		playerScoreView.setText(Integer.toString(playerScore));

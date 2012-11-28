@@ -44,15 +44,6 @@
 		android:onClick="playAgain" />
 
     <TextView
-        android:id="@+id/result_winner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/choice_you"
-        android:layout_centerHorizontal="true"
-        android:text="Winner"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
         android:id="@+id/score_you"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,6 +59,17 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/score_you"
         android:layout_centerHorizontal="true"
-        android:text="@string/scores" />
+        android:text="@string/scores"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/result_winner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/choice_you"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:text="Winner"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 	
 </RelativeLayout>
