@@ -2,6 +2,7 @@ package org.yitznewton.rockpaperscissors;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -16,6 +17,11 @@ public class ResultActivity extends Activity {
 	static final String STATE_COMPUTER_CHOICE_STRING = "computer_choice_string";
 	static final String STATE_WINNER = "winner";
 	static final String STATE_WINNER_STRING = "winner_string";
+	static final String STATE_PLAYER_SCORE = "player_score";
+	static final String STATE_COMPUTER_SCORE = "computer_score";
+	
+	static final String PREFERENCE_PLAYER_SCORE = "player_score";
+	static final String PREFERENCE_COMPUTER_SCORE = "computer_score";
 	
 	private int playerChoice   = -1;
 	private String playerChoiceString;
@@ -23,6 +29,8 @@ public class ResultActivity extends Activity {
 	private String computerChoiceString;
 	private int winner = -1;
 	private String winnerString;
+	private int playerScore = 0;
+	private int computerScore = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,11 @@ public class ResultActivity extends Activity {
 		setContentView(R.layout.activity_result);
 		
 		if (savedInstanceState == null) {
+			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+			SharedPreferences.Editor editor = preferences.edit();
+			playerScore = preferences.getInt(PREFERENCE_PLAYER_SCORE, 0);
+			computerScore = preferences.getInt(PREFERENCE_COMPUTER_SCORE, 0);
+			
 			switch (getIntent().getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1)) {
 			case R.id.button_rock:
 				playerChoice = RoundOfPlay.CHOICE_ROCK;
@@ -54,9 +67,15 @@ public class ResultActivity extends Activity {
 			switch (winner) {
 			case 0:
 				winnerString = getString(R.string.you_win);
+				playerScore++;
+				editor.putInt(PREFERENCE_PLAYER_SCORE, playerScore);
+				editor.commit();
 				break;
 			case 1:
 				winnerString = getString(R.string.i_win);
+				computerScore++;
+				editor.putInt(PREFERENCE_COMPUTER_SCORE, computerScore);
+				editor.commit();
 				break;
 			case -1:
 				winnerString = getString(R.string.draw);
@@ -76,6 +95,12 @@ public class ResultActivity extends Activity {
 		
 		TextView winnerView = (TextView) findViewById(R.id.result_winner);
 		winnerView.setText(winnerString);
+		
+		TextView playerScoreView = (TextView) findViewById(R.id.score_you);
+		playerScoreView.setText(Integer.toString(playerScore));
+		
+		TextView computerScoreView = (TextView) findViewById(R.id.score_me);
+		computerScoreView.setText(Integer.toString(computerScore));
 	}
 	
 	@Override
@@ -87,6 +112,8 @@ public class ResultActivity extends Activity {
 		savedInstanceState.putString(STATE_COMPUTER_CHOICE_STRING, computerChoiceString);
 		savedInstanceState.putInt(STATE_WINNER, winner);
 		savedInstanceState.putString(STATE_WINNER_STRING, winnerString);
+		savedInstanceState.putInt(STATE_PLAYER_SCORE, playerScore);
+		savedInstanceState.putInt(STATE_COMPUTER_SCORE, computerScore);
 		
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -99,6 +126,8 @@ public class ResultActivity extends Activity {
 		computerChoiceString = state.getString(STATE_COMPUTER_CHOICE_STRING);
 		winner = state.getInt(STATE_WINNER);
 		winnerString = state.getString(STATE_WINNER_STRING);
+		playerScore = state.getInt(STATE_PLAYER_SCORE);
+		computerScore = state.getInt(STATE_COMPUTER_SCORE);
 	}
 	
 	public void playAgain(View v)
