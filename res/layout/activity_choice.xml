@@ -5,28 +5,31 @@
     android:orientation="vertical"
     tools:context=".ChoiceActivity" >
 
-    <Button
+    <ImageButton
         android:id="@+id/button_rock"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:text="@string/rock"
+        android:src="@drawable/rock"
+        android:contentDescription="@string/rock"
         android:onClick="onClick" />
 
-    <Button
+    <ImageButton
         android:id="@+id/button_paper"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:text="@string/paper"
+        android:src="@drawable/paper"
+        android:contentDescription="@string/paper"
         android:onClick="onClick" />
 
-    <Button
+    <ImageButton
         android:id="@+id/button_scissors"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:text="@string/scissors"
+        android:src="@drawable/scissors"
+        android:contentDescription="@string/scissors"
         android:onClick="onClick" />
 
 </LinearLayout>

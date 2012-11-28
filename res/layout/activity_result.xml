@@ -14,14 +14,19 @@
 		android:layout_alignParentRight="true" android:text="@string/me"
 		android:textAppearance="?android:attr/textAppearanceLarge" />
 
-	<TextView android:id="@+id/choice_you" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_below="@id/header_you"
-		android:text="yourchoice" android:textAppearance="?android:attr/textAppearanceLarge" />
-
-	<TextView android:id="@+id/choice_me" android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/choice_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/header_you"
+        android:src="@drawable/rock" />
+    
+	<ImageView android:id="@+id/choice_me" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_alignBaseline="@id/choice_you"
-		android:layout_alignBottom="@id/choice_you" android:text="mychoice"
-		android:layout_alignParentRight="true" android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:src="@drawable/scissors"
+		android:layout_alignBottom="@id/choice_you"
+		android:layout_alignParentRight="true"/>
 
 	<TextView android:id="@+id/score_me" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_alignBaseline="@+id/score_you"
@@ -71,5 +76,5 @@
         android:layout_marginTop="18dp"
         android:text="Winner"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-	
+
 </RelativeLayout>

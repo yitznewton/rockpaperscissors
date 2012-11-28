@@ -3,18 +3,18 @@ package org.yitznewton.rockpaperscissors;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ResultActivity extends Activity {
 	public static final String EXTRA_PLAYER_CHOICE = "player_choice";
 	
 	static final String STATE_PLAYER_CHOICE = "player_choice";
-	static final String STATE_PLAYER_CHOICE_STRING = "player_choice_string";
 	static final String STATE_COMPUTER_CHOICE = "computer_choice";
-	static final String STATE_COMPUTER_CHOICE_STRING = "computer_choice_string";
 	static final String STATE_WINNER = "winner";
 	static final String STATE_WINNER_STRING = "winner_string";
 	static final String STATE_PLAYER_SCORE = "player_score";
@@ -24,9 +24,7 @@ public class ResultActivity extends Activity {
 	static final String PREFERENCE_COMPUTER_SCORE = "computer_score";
 	
 	private int playerChoice   = -1;
-	private String playerChoiceString;
 	private int computerChoice = -1;
-	private String computerChoiceString;
 	private int winner = -1;
 	private String winnerString;
 	private int playerScore = 0;
@@ -44,15 +42,12 @@ public class ResultActivity extends Activity {
 			switch (getIntent().getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1)) {
 			case R.id.button_rock:
 				playerChoice = RoundOfPlay.CHOICE_ROCK;
-				playerChoiceString = getString(R.string.rock);
 				break;
 			case R.id.button_paper:
 				playerChoice = RoundOfPlay.CHOICE_PAPER;
-				playerChoiceString = getString(R.string.paper);
 				break;
 			case R.id.button_scissors:
 				playerChoice = RoundOfPlay.CHOICE_SCISSORS;
-				playerChoiceString = getString(R.string.scissors);
 				break;
 			default:
 				throw new RuntimeException("Unexpected player choice value");
@@ -81,26 +76,18 @@ public class ResultActivity extends Activity {
 			restoreState(savedInstanceState);
 		}
 
-		
-		TextView playerChoiceView = (TextView) findViewById(R.id.choice_you);
-		playerChoiceView.setText(playerChoiceString);
-		
-		TextView computerChoiceView = (TextView) findViewById(R.id.choice_me);
-		computerChoiceView.setText(computerChoiceString());
-		
 		TextView winnerView = (TextView) findViewById(R.id.result_winner);
 		winnerView.setText(winnerString);
 
 		drawScore();
+		drawChoices();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState)
 	{
 		savedInstanceState.putInt(STATE_PLAYER_CHOICE, playerChoice);
-		savedInstanceState.putString(STATE_PLAYER_CHOICE_STRING, playerChoiceString);
 		savedInstanceState.putInt(STATE_COMPUTER_CHOICE, computerChoice);
-		savedInstanceState.putString(STATE_COMPUTER_CHOICE_STRING, computerChoiceString);
 		savedInstanceState.putInt(STATE_WINNER, winner);
 		savedInstanceState.putString(STATE_WINNER_STRING, winnerString);
 		savedInstanceState.putInt(STATE_PLAYER_SCORE, playerScore);
@@ -112,9 +99,7 @@ public class ResultActivity extends Activity {
 	private void restoreState(Bundle state)
 	{
 		playerChoice = state.getInt(STATE_PLAYER_CHOICE);
-		playerChoiceString = state.getString(STATE_PLAYER_CHOICE_STRING);
 		computerChoice = state.getInt(STATE_COMPUTER_CHOICE);
-		computerChoiceString = state.getString(STATE_COMPUTER_CHOICE_STRING);
 		winner = state.getInt(STATE_WINNER);
 		winnerString = state.getString(STATE_WINNER_STRING);
 		playerScore = state.getInt(STATE_PLAYER_SCORE);
@@ -168,31 +153,36 @@ public class ResultActivity extends Activity {
 		TextView computerScoreView = (TextView) findViewById(R.id.score_me);
 		computerScoreView.setText(Integer.toString(computerScore));
 	}
+	
+	private void drawChoices()
+	{
+		ImageView pv = (ImageView) findViewById(R.id.choice_you);
+		pv.setImageDrawable(resourceForChoice(playerChoice));
+		
+		ImageView cv = (ImageView) findViewById(R.id.choice_me);
+		cv.setImageDrawable(resourceForChoice(computerChoice));
+	}
+	
+	private Drawable resourceForChoice(int c)
+	{
+		switch (c) {
+		case RoundOfPlay.CHOICE_ROCK:
+			return getResources().getDrawable(R.drawable.rock);
+		case RoundOfPlay.CHOICE_PAPER:
+			return getResources().getDrawable(R.drawable.paper);
+		case RoundOfPlay.CHOICE_SCISSORS:
+			return getResources().getDrawable(R.drawable.scissors);
+		default:
+			throw new RuntimeException("Invalid choice");
+		}
+	}
 
 	private int computerChoice()
 	{
-		if (computerChoice != -1) {
-			return computerChoice;
+		if (computerChoice == -1) {
+			computerChoice = new ComputerChooser().get();
 		}
 		
-		return computerChoice = new ComputerChooser().get();
-	}
-	
-	private String computerChoiceString()
-	{
-		if (computerChoiceString != null) {
-			return computerChoiceString;
-		}
-		
-		switch(computerChoice()) {
-		case RoundOfPlay.CHOICE_ROCK:
-			return computerChoiceString = getString(R.string.rock);
-		case RoundOfPlay.CHOICE_PAPER:
-			return computerChoiceString = getString(R.string.paper);
-		case RoundOfPlay.CHOICE_SCISSORS:
-			return computerChoiceString = getString(R.string.scissors);
-		}
-		
-		return null;
+		return computerChoice;
 	}
 }
