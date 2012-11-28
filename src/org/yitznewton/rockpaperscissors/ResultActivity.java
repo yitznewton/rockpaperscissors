@@ -95,12 +95,8 @@ public class ResultActivity extends Activity {
 		
 		TextView winnerView = (TextView) findViewById(R.id.result_winner);
 		winnerView.setText(winnerString);
-		
-		TextView playerScoreView = (TextView) findViewById(R.id.score_you);
-		playerScoreView.setText(Integer.toString(playerScore));
-		
-		TextView computerScoreView = (TextView) findViewById(R.id.score_me);
-		computerScoreView.setText(Integer.toString(computerScore));
+
+		drawScores();
 	}
 	
 	@Override
@@ -135,12 +131,36 @@ public class ResultActivity extends Activity {
 		Intent i = new Intent(this, ChoiceActivity.class);
 		startActivity(i);
 	}
-
+	
+	public void resetScore(View v)
+	{
+		playerScore = 0;
+		computerScore = 0;
+		
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		
+		editor.putInt(PREFERENCE_PLAYER_SCORE, playerScore);
+		editor.putInt(PREFERENCE_COMPUTER_SCORE, computerScore);
+		editor.commit();
+		
+		drawScores();
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_result, menu);
 		return true;
+	}
+
+	private void drawScores()
+	{
+		TextView playerScoreView = (TextView) findViewById(R.id.score_you);
+		playerScoreView.setText(Integer.toString(playerScore));
+		
+		TextView computerScoreView = (TextView) findViewById(R.id.score_me);
+		computerScoreView.setText(Integer.toString(computerScore));
 	}
 
 	private int computerChoice()
