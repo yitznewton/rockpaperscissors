@@ -1,6 +1,14 @@
 package org.yitznewton.rockpaperscissors;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -19,16 +27,18 @@ public class ResultActivity extends Activity {
 	static final String STATE_WINNER_STRING = "winner_string";
 	static final String STATE_PLAYER_SCORE = "player_score";
 	static final String STATE_COMPUTER_SCORE = "computer_score";
+	static final String STATE_HISTORY = "history";
 	
 	static final String PREFERENCE_PLAYER_SCORE = "player_score";
 	static final String PREFERENCE_COMPUTER_SCORE = "computer_score";
 	
-	private int playerChoice   = -1;
+	private int playerChoice = -1;
 	private int computerChoice = -1;
 	private int winner = -1;
 	private String winnerString;
 	private int playerScore = 0;
 	private int computerScore = 0;
+	private ArrayList<int[]> history;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,40 +47,10 @@ public class ResultActivity extends Activity {
 		setContentView(R.layout.activity_result);
 		
 		if (savedInstanceState == null) {
+			loadHistory();
 			loadScore();
-			
-			switch (getIntent().getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1)) {
-			case R.id.button_rock:
-				playerChoice = RoundOfPlay.CHOICE_ROCK;
-				break;
-			case R.id.button_paper:
-				playerChoice = RoundOfPlay.CHOICE_PAPER;
-				break;
-			case R.id.button_scissors:
-				playerChoice = RoundOfPlay.CHOICE_SCISSORS;
-				break;
-			default:
-				throw new RuntimeException("Unexpected player choice value");
-			}
-
-			RoundOfPlay r = new RoundOfPlay(playerChoice, computerChoice());
-			winner = r.winner();
-			
-			switch (winner) {
-			case 0:
-				winnerString = getString(R.string.you_win);
-				playerScore++;
-				saveScore();
-				break;
-			case 1:
-				winnerString = getString(R.string.i_win);
-				computerScore++;
-				saveScore();
-				break;
-			case -1:
-				winnerString = getString(R.string.draw);
-				break;
-			}
+			retrievePlayerChoice();
+			playRound(playerChoice, computerChoice(), savedInstanceState);
 		}
 		else {
 			restoreState(savedInstanceState);
@@ -92,6 +72,7 @@ public class ResultActivity extends Activity {
 		savedInstanceState.putString(STATE_WINNER_STRING, winnerString);
 		savedInstanceState.putInt(STATE_PLAYER_SCORE, playerScore);
 		savedInstanceState.putInt(STATE_COMPUTER_SCORE, computerScore);
+		savedInstanceState.putSerializable(STATE_HISTORY, history);
 		
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -104,6 +85,7 @@ public class ResultActivity extends Activity {
 		winnerString = state.getString(STATE_WINNER_STRING);
 		playerScore = state.getInt(STATE_PLAYER_SCORE);
 		computerScore = state.getInt(STATE_COMPUTER_SCORE);
+		history = (ArrayList) state.getSerializable(STATE_HISTORY);
 	}
 	
 	public void playAgain(View v)
@@ -116,7 +98,9 @@ public class ResultActivity extends Activity {
 	{
 		playerScore = 0;
 		computerScore = 0;
+		history = new ArrayList<int[]>();
 		
+		saveHistory();
 		saveScore();
 		drawScore();
 	}
@@ -126,6 +110,53 @@ public class ResultActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_result, menu);
 		return true;
+	}
+	
+	private void retrievePlayerChoice()
+	{
+		int pChoice = getIntent()
+				.getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1);
+		
+		switch (pChoice) {
+		case R.id.button_rock:
+			playerChoice = RoundOfPlay.CHOICE_ROCK;
+			break;
+		case R.id.button_paper:
+			playerChoice = RoundOfPlay.CHOICE_PAPER;
+			break;
+		case R.id.button_scissors:
+			playerChoice = RoundOfPlay.CHOICE_SCISSORS;
+			break;
+		default:
+			throw new RuntimeException("Unexpected player choice value");
+		}
+	}
+	
+	private void playRound(int pChoice, int cChoice, Bundle state)
+	{
+		RoundOfPlay r = new RoundOfPlay(pChoice, cChoice);
+		
+		winner = r.winner();
+		
+		switch (winner) {
+		case 0:
+			winnerString = getString(R.string.you_win);
+			playerScore++;
+			saveScore();
+			break;
+		case 1:
+			winnerString = getString(R.string.i_win);
+			computerScore++;
+			saveScore();
+			break;
+		case -1:
+			winnerString = getString(R.string.draw);
+			break;
+		}
+		
+		int[] h = {pChoice, cChoice};
+		history.add(h);
+		saveHistory();
 	}
 	
 	private void loadScore()
@@ -143,6 +174,42 @@ public class ResultActivity extends Activity {
 		editor.putInt(PREFERENCE_PLAYER_SCORE, playerScore);
 		editor.putInt(PREFERENCE_COMPUTER_SCORE, computerScore);
 		editor.commit();
+	}
+	
+	private void loadHistory()
+	{
+		try {
+			FileInputStream fis = openFileInput("history");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			history = (ArrayList<int[]>) ois.readObject();	
+			ois.close();
+		}
+		catch (IOException e) {
+			
+		}
+		catch (ClassNotFoundException e) {
+			
+		}
+		finally {
+			if (history == null) {
+				history = new ArrayList<int[]>();
+			}
+		}
+	}
+	
+	private void saveHistory()
+	{
+		try {
+			FileOutputStream fos
+				= openFileOutput("history", Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(history);
+			fos.getFD().sync();
+			oos.close();
+		}
+		catch (IOException e) {
+			
+		}
 	}
 
 	private void drawScore()
@@ -180,7 +247,7 @@ public class ResultActivity extends Activity {
 	private int computerChoice()
 	{
 		if (computerChoice == -1) {
-			computerChoice = new ComputerChooser().get();
+			computerChoice = new ComputerChooser().get(history);
 		}
 		
 		return computerChoice;

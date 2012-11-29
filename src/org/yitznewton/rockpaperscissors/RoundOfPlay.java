@@ -4,7 +4,7 @@ public class RoundOfPlay {
 	public static final int CHOICE_ROCK     = 0;
 	public static final int CHOICE_PAPER    = 1;
 	public static final int CHOICE_SCISSORS = 2;
-	
+
 	protected int choice0;
 	protected int choice1;
 	
