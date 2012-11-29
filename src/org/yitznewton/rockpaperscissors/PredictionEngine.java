@@ -1,8 +1,8 @@
 package org.yitznewton.rockpaperscissors;
 
 import java.util.ArrayList;
-
-import android.util.Log;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PredictionEngine {
 	private ArrayList<int[]> history;
@@ -18,7 +18,7 @@ public class PredictionEngine {
 			return findPattern();
 		}
 		
-		return mode();
+		return significantMode();
 	}
 	
 	private int findPattern()
@@ -26,28 +26,28 @@ public class PredictionEngine {
 		return -1;
 	}
 	
-	private int mode()
+	private int significantMode()
 	{
-		ArrayList<Integer> alreadyChecked = new ArrayList<Integer>();
-
-		int value = -1;
-		int maxCount = 0;
+		HashMap<Integer, Integer> frequencies
+			= new HashMap<Integer, Integer>();
 		
-		for (int i = 0; i < history.size(); i++) {
-			int current = history.get(i)[0];
-			if (alreadyChecked.indexOf(Integer.valueOf(current)) != -1) continue;
-			alreadyChecked.add(Integer.valueOf(current));
-			
-			int count = 0;
-			for (int j = 0; j < history.size(); j++) {
-				if (history.get(j)[0] == current) count++;
-			}
-			if (count > maxCount) {
-				maxCount = count;
-				value = history.get(i)[0];
+		for (int[] round : history) {
+			Integer frequency = frequencies.get(round[0]);
+			frequencies.put(round[0], (frequency == null ? 1 : ++frequency));
+		}
+		
+		int mode = 0;
+		int maxFrequency = 0;
+		
+		for (Map.Entry<Integer, Integer> entry : frequencies.entrySet()) {
+			int frequency = entry.getValue();
+			if (frequency > maxFrequency) {
+				maxFrequency = frequency;
+				mode = entry.getKey();
 			}
 		}
 		
-		return value;
+		float ratio = (float) maxFrequency / (float) history.size();
+		return ratio > 0.4f ? mode : -1;
 	}
 }
