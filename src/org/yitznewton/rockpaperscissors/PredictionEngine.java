@@ -28,15 +28,19 @@ public class PredictionEngine {
 	
 	private int mode()
 	{
-		ArrayList<int[]> pChoices = new ArrayList<int[]>();
+		ArrayList<Integer> alreadyChecked = new ArrayList<Integer>();
 
 		int value = -1;
 		int maxCount = 0;
 		
 		for (int i = 0; i < history.size(); i++) {
+			int current = history.get(i)[0];
+			if (alreadyChecked.indexOf(Integer.valueOf(current)) != -1) continue;
+			alreadyChecked.add(Integer.valueOf(current));
+			
 			int count = 0;
 			for (int j = 0; j < history.size(); j++) {
-				if (history.get(i)[0] == history.get(j)[0]) count++;
+				if (history.get(j)[0] == current) count++;
 			}
 			if (count > maxCount) {
 				maxCount = count;
