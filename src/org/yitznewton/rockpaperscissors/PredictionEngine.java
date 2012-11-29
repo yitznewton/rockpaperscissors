@@ -10,9 +10,9 @@ import org.yitznewton.rockpaperscissors.predictor.Mode;
 import org.yitznewton.rockpaperscissors.predictor.Pattern;
 
 public class PredictionEngine {
-	private ArrayList<int[]> history;
+	private List<int[]> history;
 	
-	public PredictionEngine(ArrayList<int[]> h)
+	public PredictionEngine(List<int[]> h)
 	{
 		history = h;
 	}

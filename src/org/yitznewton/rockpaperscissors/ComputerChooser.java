@@ -1,10 +1,10 @@
 package org.yitznewton.rockpaperscissors;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class ComputerChooser
 {
-	public int get(ArrayList<int[]> history)
+	public int get(List<int[]> history)
 	{
 		PredictionEngine engine = new PredictionEngine(history);
 		int predicted = engine.predict();
