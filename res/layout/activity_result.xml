@@ -41,23 +41,6 @@
 		android:layout_alignRight="@+id/score_me" android:text="@string/reset_score"
 		android:onClick="resetScore" />
 
-	<Button android:id="@+id/button_play_again"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_alignLeft="@+id/score_you"
-		android:layout_alignParentBottom="true" android:layout_marginBottom="14dp"
-		android:text="@string/play_again"
-		android:onClick="playAgain" />
-
-    <TextView
-        android:id="@+id/score_you"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button_play_again"
-        android:layout_alignLeft="@+id/choice_you"
-        android:layout_marginBottom="28dp"
-        android:text="yourscore"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <TextView
         android:id="@+id/scores_label"
         android:layout_width="wrap_content"
@@ -75,5 +58,24 @@
         android:layout_centerHorizontal="true"
         android:text="Winner"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/score_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/choice_you"
+        android:layout_alignParentBottom="true"
+        android:text="yourscore"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/button_play_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/choice_you"
+        android:layout_below="@+id/result_winner"
+        android:layout_marginTop="27dp"
+        android:onClick="playAgain"
+        android:text="@string/play_again" />
 
 </RelativeLayout>
