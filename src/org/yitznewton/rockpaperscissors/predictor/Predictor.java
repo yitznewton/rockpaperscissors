@@ -1,12 +1,12 @@
 package org.yitznewton.rockpaperscissors.predictor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Predictor
 {
-	protected ArrayList<int[]> history;
+	protected List<int[]> history;
 	
-	public Predictor(ArrayList<int[]> h){
+	public Predictor(List<int[]> h){
 		history = h;
 	}
 	

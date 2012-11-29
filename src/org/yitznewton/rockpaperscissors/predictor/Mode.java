@@ -1,12 +1,12 @@
 package org.yitznewton.rockpaperscissors.predictor;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Mode extends Predictor
 {
-	public Mode(ArrayList<int[]> h)
+	public Mode(List<int[]> h)
 	{
 		super(h);
 	}

@@ -1,16 +1,16 @@
 package org.yitznewton.rockpaperscissors.predictor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Pattern extends Predictor
 {
-	public Pattern(ArrayList<int[]> h)
+	public Pattern(List<int[]> h)
 	{
 		super(h);
 		
 		if (h.size() > 50) {
-			history = (ArrayList<int[]>) h.subList(h.size()-50, h.size());
+			history = (List<int[]>) h.subList(h.size()-50, h.size());
 		}
 	}
 	

@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -154,8 +155,7 @@ public class ResultActivity extends Activity {
 			break;
 		}
 		
-		int[] h = {pChoice, cChoice};
-		history.add(h);
+		history.add(new int[] {pChoice, cChoice});
 		saveHistory();
 	}
 	
