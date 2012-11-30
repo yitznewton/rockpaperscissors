@@ -7,4 +7,9 @@ public class Paper extends Gesture
 		if (this.getClass().equals(g.getClass())) return 0;
 		return g instanceof Rock ? 1 : -1;
 	}
+	
+	public int toInt()
+	{
+		return Gesture.PAPER;
+	}
 }

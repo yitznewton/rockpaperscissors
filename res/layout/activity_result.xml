@@ -19,19 +19,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/header_you"
-        android:src="@drawable/rock" />
+        android:layout_below="@+id/header_you" />
     
 	<ImageView android:id="@+id/choice_me" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_alignBaseline="@id/choice_you"
-        android:src="@drawable/scissors"
 		android:layout_alignBottom="@id/choice_you"
 		android:layout_alignParentRight="true"/>
 
 	<TextView android:id="@+id/score_me" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_alignBaseline="@+id/score_you"
 		android:layout_alignBottom="@id/score_you"
-		android:layout_alignParentRight="true" android:text="myscore"
+		android:layout_alignParentRight="true"
 		android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<Button android:id="@+id/button_reset_score"
@@ -56,7 +54,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/choice_you"
         android:layout_centerHorizontal="true"
-        android:text="Winner"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -65,7 +62,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/choice_you"
         android:layout_alignParentBottom="true"
-        android:text="yourscore"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button

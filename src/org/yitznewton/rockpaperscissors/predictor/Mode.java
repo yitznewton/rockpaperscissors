@@ -1,8 +1,10 @@
 package org.yitznewton.rockpaperscissors.predictor;
 
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.yitznewton.rockpaperscissors.gesture.Gesture;
 
 public class Mode extends Predictor
 {
@@ -12,7 +14,7 @@ public class Mode extends Predictor
 	}
 	
 	@Override
-	public int get()
+	public Gesture get()
 	{
 		HashMap<Integer, Integer> frequencies
 			= new HashMap<Integer, Integer>();
@@ -34,6 +36,6 @@ public class Mode extends Predictor
 		}
 		
 		float ratio = (float) maxFrequency / (float) history.size();
-		return ratio > 0.4f ? mode : -1;
+		return ratio > 0.4f ? Gesture.fromInt(mode) : null;
 	}
 }

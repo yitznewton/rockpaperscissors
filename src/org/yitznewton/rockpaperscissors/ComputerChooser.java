@@ -2,25 +2,27 @@ package org.yitznewton.rockpaperscissors;
 import java.util.List;
 import java.util.Random;
 
+import org.yitznewton.rockpaperscissors.gesture.Gesture;
+import org.yitznewton.rockpaperscissors.gesture.Paper;
+import org.yitznewton.rockpaperscissors.gesture.Rock;
+import org.yitznewton.rockpaperscissors.gesture.Scissors;
+
 public class ComputerChooser
 {
-	public int get(List<int[]> history)
+	public Gesture get(List<int[]> history)
 	{
 		PredictionEngine engine = new PredictionEngine(history);
-		int predicted = engine.predict();
-		
-		if (predicted != -1) {
-			switch (predicted) {
-			case RoundOfPlay.CHOICE_ROCK:
-				return RoundOfPlay.CHOICE_PAPER;
-			case RoundOfPlay.CHOICE_PAPER:
-				return RoundOfPlay.CHOICE_SCISSORS;
-			case RoundOfPlay.CHOICE_SCISSORS:
-				return RoundOfPlay.CHOICE_ROCK;
-			}
-		}
+		Gesture predicted = engine.predict();
+
+		if (predicted != null) return predicted;
 		
 		Random r = new Random();
-		return r.nextInt(3);
+		switch (r.nextInt(3)) {
+		case 0: return new Rock();
+		case 1: return new Paper();
+		case 2: return new Scissors();
+		}
+		
+		throw new RuntimeException("Should have returned above");
 	}
 }

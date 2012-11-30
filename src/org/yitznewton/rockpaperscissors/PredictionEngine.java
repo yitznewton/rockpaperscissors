@@ -1,11 +1,8 @@
 package org.yitznewton.rockpaperscissors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.yitznewton.rockpaperscissors.gesture.Gesture;
 import org.yitznewton.rockpaperscissors.predictor.Mode;
 import org.yitznewton.rockpaperscissors.predictor.Pattern;
 
@@ -17,11 +14,11 @@ public class PredictionEngine {
 		history = h;
 	}
 	
-	public int predict()
+	public Gesture predict()
 	{
-		int fromPattern = new Pattern(history).get();
+		Gesture fromPattern = new Pattern(history).get();
 		
-		if (fromPattern != -1) {
+		if (fromPattern != null) {
 			return fromPattern;
 		}
 		

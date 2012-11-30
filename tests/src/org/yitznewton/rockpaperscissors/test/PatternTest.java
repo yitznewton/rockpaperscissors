@@ -1,10 +1,13 @@
 package org.yitznewton.rockpaperscissors.test;
 import java.util.ArrayList;
 
-import org.yitznewton.rockpaperscissors.predictor.Pattern;
-
 import junit.framework.TestCase;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+
+import org.yitznewton.rockpaperscissors.gesture.Scissors;
+import org.yitznewton.rockpaperscissors.predictor.Pattern;
 
 public class PatternTest extends TestCase
 {
@@ -15,7 +18,7 @@ public class PatternTest extends TestCase
 		h.add(new int[] {2,1});
 		
 		Pattern ptn = new Pattern(h);
-		assertEquals(-1, ptn.get());
+		assertNull(ptn.get());
 	}
 	
 	public void testThreeSequence()
@@ -31,6 +34,6 @@ public class PatternTest extends TestCase
 		h.add(new int[] {2,0});
 		
 		Pattern ptn = new Pattern(h);
-		assertEquals(2, ptn.get());
+		assertThat(ptn.get(), instanceOf(Scissors.class));
 	}
 }

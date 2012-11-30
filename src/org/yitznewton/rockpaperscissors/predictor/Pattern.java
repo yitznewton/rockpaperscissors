@@ -3,6 +3,8 @@ package org.yitznewton.rockpaperscissors.predictor;
 import java.util.Arrays;
 import java.util.List;
 
+import org.yitznewton.rockpaperscissors.gesture.Gesture;
+
 public class Pattern extends Predictor
 {
 	public Pattern(List<int[]> h)
@@ -15,7 +17,7 @@ public class Pattern extends Predictor
 	}
 	
 	@Override
-	public int get()
+	public Gesture get()
 	{
 		// loop through sets in history, from largest to smallest, looking
 		// for a match to recent history
@@ -34,14 +36,14 @@ public class Pattern extends Predictor
 				assert recentEnd - recentStart == setEnd - i;
 				
 				if (same(recentStart, recentEnd, i, setEnd)) {
-					return history.get(i + sizeToFind)[0];
+					return Gesture.fromInt(history.get(i + sizeToFind)[0]);
 				}
 			}
 			
 			sizeToFind--;
 		}
 		
-		return -1;
+		return null;
 	}
 	
 	private boolean same(int a0, int a1, int b0, int b1)

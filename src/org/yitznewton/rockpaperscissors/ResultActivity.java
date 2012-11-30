@@ -27,10 +27,6 @@ import android.widget.TextView;
 public class ResultActivity extends Activity {
 	public static final String EXTRA_PLAYER_CHOICE = "player_choice";
 	
-	static final String STATE_PLAYER_GESTURE = "player_gesture";
-	static final String STATE_COMPUTER_GESTURE = "computer_gesture";
-	static final String STATE_WINNER = "winner";
-	static final String STATE_WINNER_STRING = "winner_string";
 	static final String STATE_PLAYER_SCORE = "player_score";
 	static final String STATE_COMPUTER_SCORE = "computer_score";
 	static final String STATE_HISTORY = "history";
@@ -40,8 +36,6 @@ public class ResultActivity extends Activity {
 	
 	private Gesture playerGesture;
 	private Gesture computerGesture;
-	private int winner = -1;
-	private String winnerString;
 	private int playerScore = 0;
 	private int computerScore = 0;
 	private ArrayList<int[]> history;
@@ -55,57 +49,36 @@ public class ResultActivity extends Activity {
 		if (savedInstanceState == null) {
 			loadHistory();
 			loadScore();
-			retrievePlayerGesture();
-			playRound(savedInstanceState);
-		}
-		else {
-			restoreState(savedInstanceState);
-		}
+			playerGesture = retrievePlayerGesture();
+			computerGesture = new ComputerChooser().get(history);
+			
+			int outcome = playerGesture.playAgainst(computerGesture);
+			
+			TextView winnerView = (TextView) findViewById(R.id.result_winner);
 
-		TextView winnerView = (TextView) findViewById(R.id.result_winner);
-		winnerView.setText(winnerString);
-
-		drawScore();
-		drawChoices();
-	}
-	
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState)
-	{
-		savedInstanceState.putString(STATE_PLAYER_GESTURE, playerGesture.getClass().getName());
-		savedInstanceState.putString(STATE_COMPUTER_GESTURE, computerGesture.getClass().getName());
-		savedInstanceState.putInt(STATE_WINNER, winner);
-		savedInstanceState.putString(STATE_WINNER_STRING, winnerString);
-		savedInstanceState.putInt(STATE_PLAYER_SCORE, playerScore);
-		savedInstanceState.putInt(STATE_COMPUTER_SCORE, computerScore);
-		savedInstanceState.putSerializable(STATE_HISTORY, history);
-		
-		super.onSaveInstanceState(savedInstanceState);
-	}
-	
-	private void restoreState(Bundle state)
-	{
-		try {
-			playerGesture = (Gesture) Class.forName(
-				state.getString(STATE_PLAYER_GESTURE)).newInstance();
-			computerGesture = (Gesture) Class.forName(
-				state.getString(STATE_COMPUTER_GESTURE)).newInstance();
+			switch (outcome) {
+			case 1:
+				winnerView.setText(getString(R.string.you_win));
+				playerScore++;
+				saveScore();
+				break;
+			case -1:
+				winnerView.setText(getString(R.string.i_win));
+				computerScore++;
+				saveScore();
+				break;
+			case 0:
+				winnerView.setText(getString(R.string.draw));
+				break;
+			}
+			
+			history.add(new int[] {playerGesture.toInt(),
+				computerGesture.toInt()});
+			
+			drawChoices();
+			drawScore();
+			saveHistory();
 		}
-		catch (ClassNotFoundException e) {
-			finish();
-		}
-		catch (IllegalAccessException e) {
-			finish();
-		}
-		catch (InstantiationException e) {
-			finish();
-		}
-		
-		winner = state.getInt(STATE_WINNER);
-		winnerString = state.getString(STATE_WINNER_STRING);
-		playerScore = state.getInt(STATE_PLAYER_SCORE);
-		computerScore = state.getInt(STATE_COMPUTER_SCORE);
-		history = (ArrayList<int[]>) state.getSerializable(STATE_HISTORY);
 	}
 	
 	public void playAgain(View v)
@@ -132,35 +105,10 @@ public class ResultActivity extends Activity {
 		return true;
 	}
 	
-	private void retrievePlayerGesture()
+	private Gesture retrievePlayerGesture()
 	{
-		playerGesture = Gesture.fromButtonId(getIntent()
+		return Gesture.fromButtonId(getIntent()
 				.getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1));
-	}
-	
-	private void playRound(Bundle state)
-	{
-		int outcome = playerGesture.playAgainst(computerGesture());
-		
-		switch (outcome) {
-		case 1:
-			winnerString = getString(R.string.you_win);
-			playerScore++;
-			saveScore();
-			break;
-		case -1:
-			winnerString = getString(R.string.i_win);
-			computerScore++;
-			saveScore();
-			break;
-		case 0:
-			winnerString = getString(R.string.draw);
-			break;
-		}
-		
-		// FIXME
-		history.add(new int[] {0,0});
-		saveHistory();
 	}
 	
 	private void loadScore()
@@ -228,46 +176,21 @@ public class ResultActivity extends Activity {
 	private void drawChoices()
 	{
 		ImageView pv = (ImageView) findViewById(R.id.choice_you);
-		// FIXME
-		pv.setImageDrawable(resourceForChoice(0));
+		pv.setImageDrawable(resourceForGesture(playerGesture));
 		
 		ImageView cv = (ImageView) findViewById(R.id.choice_me);
-		// FIXME
-		cv.setImageDrawable(resourceForChoice(1));
+		cv.setImageDrawable(resourceForGesture(computerGesture));
 	}
 	
-	private Drawable resourceForChoice(int c)
+	private Drawable resourceForGesture(Gesture g)
 	{
-		switch (c) {
-		case RoundOfPlay.CHOICE_ROCK:
+		if (g instanceof Rock)
 			return getResources().getDrawable(R.drawable.rock);
-		case RoundOfPlay.CHOICE_PAPER:
+		if (g instanceof Paper)
 			return getResources().getDrawable(R.drawable.paper);
-		case RoundOfPlay.CHOICE_SCISSORS:
+		if (g instanceof Scissors)
 			return getResources().getDrawable(R.drawable.scissors);
-		default:
-			throw new RuntimeException("Invalid choice");
-		}
-	}
 
-	private Gesture computerGesture()
-	{
-		if (computerGesture == null) {
-			int computerChoice = new ComputerChooser().get(history);
-			
-			switch (computerChoice) {
-			case RoundOfPlay.CHOICE_ROCK:
-				computerGesture = new Rock();
-				break;
-			case RoundOfPlay.CHOICE_PAPER:
-				computerGesture = new Paper();
-				break;
-			case RoundOfPlay.CHOICE_SCISSORS:
-				computerGesture = new Scissors();
-				break;
-			}
-		}
-		
-		return computerGesture;
+		throw new RuntimeException("Invalid gesture");
 	}
 }

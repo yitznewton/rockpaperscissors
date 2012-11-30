@@ -2,6 +2,8 @@ package org.yitznewton.rockpaperscissors.predictor;
 
 import java.util.List;
 
+import org.yitznewton.rockpaperscissors.gesture.Gesture;
+
 public abstract class Predictor
 {
 	protected List<int[]> history;
@@ -10,5 +12,5 @@ public abstract class Predictor
 		history = h;
 	}
 	
-	abstract public int get();
+	abstract public Gesture get();
 }

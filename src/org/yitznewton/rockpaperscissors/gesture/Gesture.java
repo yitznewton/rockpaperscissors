@@ -4,7 +4,26 @@ import org.yitznewton.rockpaperscissors.R;
 
 public abstract class Gesture
 {
+	public static final int ROCK     = 0;
+	public static final int PAPER    = 1;
+	public static final int SCISSORS = 2;
+	
 	abstract public int playAgainst(Gesture g);
+	abstract public int toInt();
+	
+	public static Gesture fromInt(int i)
+	{
+		switch(i) {
+		case ROCK:
+			return new Rock();
+		case PAPER:
+			return new Paper();
+		case SCISSORS:
+			return new Scissors();
+		default:
+			throw new RuntimeException("Invalid integer");
+		}
+	}
 	
 	public static Gesture fromButtonId(int id)
 	{
