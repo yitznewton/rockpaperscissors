@@ -30,6 +30,7 @@
 		android:layout_height="wrap_content" android:layout_alignBaseline="@+id/score_you"
 		android:layout_alignBottom="@id/score_you"
 		android:layout_alignParentRight="true"
+		android:freezesText="true"
 		android:textAppearance="?android:attr/textAppearanceLarge" />
 
 	<Button android:id="@+id/button_reset_score"
@@ -54,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/choice_you"
         android:layout_centerHorizontal="true"
+        android:freezesText="true"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -62,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/choice_you"
         android:layout_alignParentBottom="true"
+        android:freezesText="true"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button

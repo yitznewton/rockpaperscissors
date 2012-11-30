@@ -27,6 +27,8 @@ import android.widget.TextView;
 public class ResultActivity extends Activity {
 	public static final String EXTRA_PLAYER_CHOICE = "player_choice";
 	
+	static final String STATE_PLAYER_GESTURE = "player_gesture";
+	static final String STATE_COMPUTER_GESTURE = "computer_gesture";
 	static final String STATE_PLAYER_SCORE = "player_score";
 	static final String STATE_COMPUTER_SCORE = "computer_score";
 	static final String STATE_HISTORY = "history";
@@ -75,10 +77,27 @@ public class ResultActivity extends Activity {
 			history.add(new int[] {playerGesture.toInt(),
 				computerGesture.toInt()});
 			
-			drawChoices();
+			drawGestures();
 			drawScore();
 			saveHistory();
 		}
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle state)
+	{
+		super.onSaveInstanceState(state);
+		state.putInt(STATE_PLAYER_GESTURE, playerGesture.toInt());
+		state.putInt(STATE_COMPUTER_GESTURE, computerGesture.toInt());
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle state)
+	{
+		super.onRestoreInstanceState(state);
+		playerGesture = Gesture.fromInt(state.getInt(STATE_PLAYER_GESTURE));
+		computerGesture = Gesture.fromInt(state.getInt(STATE_COMPUTER_GESTURE));
+		drawGestures();
 	}
 	
 	public void playAgain(View v)
@@ -173,7 +192,7 @@ public class ResultActivity extends Activity {
 		computerScoreView.setText(Integer.toString(computerScore));
 	}
 	
-	private void drawChoices()
+	private void drawGestures()
 	{
 		ImageView pv = (ImageView) findViewById(R.id.choice_you);
 		pv.setImageDrawable(resourceForGesture(playerGesture));
