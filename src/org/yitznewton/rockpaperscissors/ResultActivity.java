@@ -29,8 +29,6 @@ public class ResultActivity extends Activity {
 	
 	static final String STATE_PLAYER_GESTURE = "player_gesture";
 	static final String STATE_COMPUTER_GESTURE = "computer_gesture";
-	static final String STATE_PLAYER_SCORE = "player_score";
-	static final String STATE_COMPUTER_SCORE = "computer_score";
 	static final String STATE_HISTORY = "history";
 	
 	static final String PREFERENCE_PLAYER_SCORE = "player_score";

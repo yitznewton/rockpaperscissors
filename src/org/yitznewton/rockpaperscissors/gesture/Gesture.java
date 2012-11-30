@@ -9,6 +9,7 @@ public abstract class Gesture
 	public static final int SCISSORS = 2;
 	
 	abstract public int playAgainst(Gesture g);
+	abstract public Gesture losesTo();
 	abstract public int toInt();
 	
 	public static Gesture fromInt(int i)

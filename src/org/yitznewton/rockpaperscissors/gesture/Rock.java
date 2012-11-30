@@ -8,6 +8,11 @@ public class Rock extends Gesture
 		return g instanceof Scissors ? 1 : -1;
 	}
 	
+	public Gesture losesTo()
+	{
+		return new Paper();
+	}
+	
 	public int toInt()
 	{
 		return Gesture.ROCK;

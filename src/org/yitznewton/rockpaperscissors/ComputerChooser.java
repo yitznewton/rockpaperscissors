@@ -11,18 +11,20 @@ public class ComputerChooser
 {
 	public Gesture get(List<int[]> history)
 	{
+		
 		PredictionEngine engine = new PredictionEngine(history);
 		Gesture predicted = engine.predict();
 
-		if (predicted != null) return predicted;
-		
-		Random r = new Random();
-		switch (r.nextInt(3)) {
-		case 0: return new Rock();
-		case 1: return new Paper();
-		case 2: return new Scissors();
+		if (predicted == null) {
+			Random r = new Random();
+			
+			switch (r.nextInt(3)) {
+			case 0: return new Rock();
+			case 1: return new Paper();
+			case 2: return new Scissors();
+			}
 		}
 		
-		throw new RuntimeException("Should have returned above");
+		return predicted.losesTo();	
 	}
 }
