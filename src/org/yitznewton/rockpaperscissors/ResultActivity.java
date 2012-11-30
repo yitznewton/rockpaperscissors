@@ -1,12 +1,17 @@
 package org.yitznewton.rockpaperscissors;
 
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
+
+import org.yitznewton.rockpaperscissors.gesture.Gesture;
+import org.yitznewton.rockpaperscissors.gesture.Paper;
+import org.yitznewton.rockpaperscissors.gesture.Rock;
+import org.yitznewton.rockpaperscissors.gesture.Scissors;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,8 +27,8 @@ import android.widget.TextView;
 public class ResultActivity extends Activity {
 	public static final String EXTRA_PLAYER_CHOICE = "player_choice";
 	
-	static final String STATE_PLAYER_CHOICE = "player_choice";
-	static final String STATE_COMPUTER_CHOICE = "computer_choice";
+	static final String STATE_PLAYER_GESTURE = "player_gesture";
+	static final String STATE_COMPUTER_GESTURE = "computer_gesture";
 	static final String STATE_WINNER = "winner";
 	static final String STATE_WINNER_STRING = "winner_string";
 	static final String STATE_PLAYER_SCORE = "player_score";
@@ -33,8 +38,8 @@ public class ResultActivity extends Activity {
 	static final String PREFERENCE_PLAYER_SCORE = "player_score";
 	static final String PREFERENCE_COMPUTER_SCORE = "computer_score";
 	
-	private int playerChoice = -1;
-	private int computerChoice = -1;
+	private Gesture playerGesture;
+	private Gesture computerGesture;
 	private int winner = -1;
 	private String winnerString;
 	private int playerScore = 0;
@@ -50,8 +55,8 @@ public class ResultActivity extends Activity {
 		if (savedInstanceState == null) {
 			loadHistory();
 			loadScore();
-			retrievePlayerChoice();
-			playRound(playerChoice, computerChoice(), savedInstanceState);
+			retrievePlayerGesture();
+			playRound(savedInstanceState);
 		}
 		else {
 			restoreState(savedInstanceState);
@@ -67,8 +72,8 @@ public class ResultActivity extends Activity {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState)
 	{
-		savedInstanceState.putInt(STATE_PLAYER_CHOICE, playerChoice);
-		savedInstanceState.putInt(STATE_COMPUTER_CHOICE, computerChoice);
+		savedInstanceState.putString(STATE_PLAYER_GESTURE, playerGesture.getClass().getName());
+		savedInstanceState.putString(STATE_COMPUTER_GESTURE, computerGesture.getClass().getName());
 		savedInstanceState.putInt(STATE_WINNER, winner);
 		savedInstanceState.putString(STATE_WINNER_STRING, winnerString);
 		savedInstanceState.putInt(STATE_PLAYER_SCORE, playerScore);
@@ -80,13 +85,27 @@ public class ResultActivity extends Activity {
 	
 	private void restoreState(Bundle state)
 	{
-		playerChoice = state.getInt(STATE_PLAYER_CHOICE);
-		computerChoice = state.getInt(STATE_COMPUTER_CHOICE);
+		try {
+			playerGesture = (Gesture) Class.forName(
+				state.getString(STATE_PLAYER_GESTURE)).newInstance();
+			computerGesture = (Gesture) Class.forName(
+				state.getString(STATE_COMPUTER_GESTURE)).newInstance();
+		}
+		catch (ClassNotFoundException e) {
+			finish();
+		}
+		catch (IllegalAccessException e) {
+			finish();
+		}
+		catch (InstantiationException e) {
+			finish();
+		}
+		
 		winner = state.getInt(STATE_WINNER);
 		winnerString = state.getString(STATE_WINNER_STRING);
 		playerScore = state.getInt(STATE_PLAYER_SCORE);
 		computerScore = state.getInt(STATE_COMPUTER_SCORE);
-		history = (ArrayList) state.getSerializable(STATE_HISTORY);
+		history = (ArrayList<int[]>) state.getSerializable(STATE_HISTORY);
 	}
 	
 	public void playAgain(View v)
@@ -113,49 +132,34 @@ public class ResultActivity extends Activity {
 		return true;
 	}
 	
-	private void retrievePlayerChoice()
+	private void retrievePlayerGesture()
 	{
-		int pChoice = getIntent()
-				.getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1);
-		
-		switch (pChoice) {
-		case R.id.button_rock:
-			playerChoice = RoundOfPlay.CHOICE_ROCK;
-			break;
-		case R.id.button_paper:
-			playerChoice = RoundOfPlay.CHOICE_PAPER;
-			break;
-		case R.id.button_scissors:
-			playerChoice = RoundOfPlay.CHOICE_SCISSORS;
-			break;
-		default:
-			throw new RuntimeException("Unexpected player choice value");
-		}
+		playerGesture = Gesture.fromButtonId(getIntent()
+				.getIntExtra(ResultActivity.EXTRA_PLAYER_CHOICE, -1));
 	}
 	
-	private void playRound(int pChoice, int cChoice, Bundle state)
+	private void playRound(Bundle state)
 	{
-		RoundOfPlay r = new RoundOfPlay(pChoice, cChoice);
+		int outcome = playerGesture.playAgainst(computerGesture());
 		
-		winner = r.winner();
-		
-		switch (winner) {
-		case 0:
+		switch (outcome) {
+		case 1:
 			winnerString = getString(R.string.you_win);
 			playerScore++;
 			saveScore();
 			break;
-		case 1:
+		case -1:
 			winnerString = getString(R.string.i_win);
 			computerScore++;
 			saveScore();
 			break;
-		case -1:
+		case 0:
 			winnerString = getString(R.string.draw);
 			break;
 		}
 		
-		history.add(new int[] {pChoice, cChoice});
+		// FIXME
+		history.add(new int[] {0,0});
 		saveHistory();
 	}
 	
@@ -196,7 +200,7 @@ public class ResultActivity extends Activity {
 			}
 		}
 	}
-	
+
 	private void saveHistory()
 	{
 		try {
@@ -224,10 +228,12 @@ public class ResultActivity extends Activity {
 	private void drawChoices()
 	{
 		ImageView pv = (ImageView) findViewById(R.id.choice_you);
-		pv.setImageDrawable(resourceForChoice(playerChoice));
+		// FIXME
+		pv.setImageDrawable(resourceForChoice(0));
 		
 		ImageView cv = (ImageView) findViewById(R.id.choice_me);
-		cv.setImageDrawable(resourceForChoice(computerChoice));
+		// FIXME
+		cv.setImageDrawable(resourceForChoice(1));
 	}
 	
 	private Drawable resourceForChoice(int c)
@@ -244,12 +250,24 @@ public class ResultActivity extends Activity {
 		}
 	}
 
-	private int computerChoice()
+	private Gesture computerGesture()
 	{
-		if (computerChoice == -1) {
-			computerChoice = new ComputerChooser().get(history);
+		if (computerGesture == null) {
+			int computerChoice = new ComputerChooser().get(history);
+			
+			switch (computerChoice) {
+			case RoundOfPlay.CHOICE_ROCK:
+				computerGesture = new Rock();
+				break;
+			case RoundOfPlay.CHOICE_PAPER:
+				computerGesture = new Paper();
+				break;
+			case RoundOfPlay.CHOICE_SCISSORS:
+				computerGesture = new Scissors();
+				break;
+			}
 		}
 		
-		return computerChoice;
+		return computerGesture;
 	}
 }
